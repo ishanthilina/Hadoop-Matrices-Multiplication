@@ -13,9 +13,12 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
- 
+
 public class MatrixMultiplication {
- 
+
+    private static final String MATRIX_A_ID = "A";
+    private static final String MATRIX_B_ID = "B";
+
     public static class Map extends Mapper<LongWritable, Text, Text, Text> {
         public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
             Configuration conf = context.getConfiguration();
@@ -38,25 +41,24 @@ public class MatrixMultiplication {
             Text outputKey = new Text();
             Text outputValue = new Text();
             
-            if (matrixData[0].equals("A")) {
+            if (matrixData[0].equals(MATRIX_A_ID)) {
                 int i = getIntFromString(matrixData[1]);
                 int j = getIntFromString(matrixData[2]);
-                for (int kPerV = 0; kPerV < pPerV; kPerV++) {
-                    outputKey.set(getStringFromInteger(i/s) + "," + getStringFromInteger(j/t) + "," + getStringFromInteger(kPerV));
-                    outputValue.set("A," + getStringFromInteger(i%s) + "," + getStringFromInteger(j%t) + "," + matrixData[3]);
+                for (int index = 0; index < pPerV; index++) {
+                    outputKey.set(getStringFromInteger(i/s) + "," + getStringFromInteger(j/t) + "," + getStringFromInteger(index));
+                    outputValue.set(MATRIX_A_ID+"," + getStringFromInteger(i%s) + "," + getStringFromInteger(j%t) + "," + matrixData[3]);
                     context.write(outputKey, outputValue);
                 }
             } else {
                 int j = getIntFromString(matrixData[1]);
                 int k = getIntFromString(matrixData[2]);
-                for (int iPerS = 0; iPerS < mPerS; iPerS++) {
-                    outputKey.set(getStringFromInteger(iPerS) + "," + getStringFromInteger(j/t) + "," + getStringFromInteger(k/v));
-                    outputValue.set("B," + getStringFromInteger(j%t) + "," + getStringFromInteger(k%v) + "," + matrixData[3]);
+                for (int index = 0; index < mPerS; index++) {
+                    outputKey.set(getStringFromInteger(index) + "," + getStringFromInteger(j/t) + "," + getStringFromInteger(k/v));
+                    outputValue.set(MATRIX_B_ID+"," + getStringFromInteger(j%t) + "," + getStringFromInteger(k%v) + "," + matrixData[3]);
                     context.write(outputKey, outputValue);
                 }
             }
         }
-
 
     }
  
