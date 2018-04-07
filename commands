@@ -1,0 +1,4 @@
+HADOOP_CLASSPATH=$(/usr/local/hadoop/bin/hadoop classpath)
+javac -classpath ${HADOOP_CLASSPATH}  -d matrix/ MatrixMultiplication.java
+jar -cvf MM.jar -C matrix/ .
+/usr/local/hadoop/bin/hadoop jar MM.jar MatrixMultiplication data.txt Output
