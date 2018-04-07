@@ -22,38 +22,42 @@ public class MatrixMultiplication {
             /*
              * Row column count
              */
-            int m = Integer.parseInt(conf.get("m"));
-            int p = Integer.parseInt(conf.get("p"));
-            int s = Integer.parseInt(conf.get("s"));
-            int t = Integer.parseInt(conf.get("t"));
-            int v = Integer.parseInt(conf.get("v"));
+            int aMatrixRows = getIntFromString(conf.get("m"));
+            int bMatrixColumns = getIntFromString(conf.get("p"));
+
+            //todo - rename
+            int s = getIntFromString(conf.get("s"));
+            int t = getIntFromString(conf.get("t"));
+            int v = getIntFromString(conf.get("v"));
             
-            int mPerS = m/s; // Number of blocks in each column of A.
-            int pPerV = p/v; // Number of blocks in each row of B.
+            int mPerS = aMatrixRows/s; // Number of blocks in each column of A.
+            int pPerV = bMatrixColumns/v; // Number of blocks in each row of B.
             
-            String line = value.toString();
-            String[] indicesAndValue = line.split(",");
+            String inputLine = value.toString();
+            String[] matrixData = inputLine.split(",");
             Text outputKey = new Text();
             Text outputValue = new Text();
             
-            if (indicesAndValue[0].equals("A")) {
-                int i = Integer.parseInt(indicesAndValue[1]);
-                int j = Integer.parseInt(indicesAndValue[2]);
+            if (matrixData[0].equals("A")) {
+                int i = getIntFromString(matrixData[1]);
+                int j = getIntFromString(matrixData[2]);
                 for (int kPerV = 0; kPerV < pPerV; kPerV++) {
-                    outputKey.set(Integer.toString(i/s) + "," + Integer.toString(j/t) + "," + Integer.toString(kPerV));
-                    outputValue.set("A," + Integer.toString(i%s) + "," + Integer.toString(j%t) + "," + indicesAndValue[3]);
+                    outputKey.set(getStringFromInteger(i/s) + "," + getStringFromInteger(j/t) + "," + getStringFromInteger(kPerV));
+                    outputValue.set("A," + getStringFromInteger(i%s) + "," + getStringFromInteger(j%t) + "," + matrixData[3]);
                     context.write(outputKey, outputValue);
                 }
             } else {
-                int j = Integer.parseInt(indicesAndValue[1]);
-                int k = Integer.parseInt(indicesAndValue[2]);
+                int j = getIntFromString(matrixData[1]);
+                int k = getIntFromString(matrixData[2]);
                 for (int iPerS = 0; iPerS < mPerS; iPerS++) {
-                    outputKey.set(Integer.toString(iPerS) + "," + Integer.toString(j/t) + "," + Integer.toString(k/v));
-                    outputValue.set("B," + Integer.toString(j%t) + "," + Integer.toString(k%v) + "," + indicesAndValue[3]);
+                    outputKey.set(getStringFromInteger(iPerS) + "," + getStringFromInteger(j/t) + "," + getStringFromInteger(k/v));
+                    outputValue.set("B," + getStringFromInteger(j%t) + "," + getStringFromInteger(k%v) + "," + matrixData[3]);
                     context.write(outputKey, outputValue);
                 }
             }
         }
+
+
     }
  
     public static class Reduce extends Reducer<Text, Text, Text, Text> {
@@ -96,13 +100,13 @@ public class MatrixMultiplication {
             String i;
             String k;
             Configuration conf = context.getConfiguration();
-            int s = Integer.parseInt(conf.get("s"));
-            int v = Integer.parseInt(conf.get("v"));
+            int s = getIntFromString(conf.get("s"));
+            int v = getIntFromString(conf.get("v"));
             Text outputValue = new Text();
             for (Entry<String, Float> entry : hash.entrySet()) {
                 indices = entry.getKey().split(",");
-                i = Integer.toString(Integer.parseInt(blockIndices[0])*s + Integer.parseInt(indices[0]));
-                k = Integer.toString(Integer.parseInt(blockIndices[2])*v + Integer.parseInt(indices[1]));
+                i = getStringFromInteger(getIntFromString(blockIndices[0])*s + getIntFromString(indices[0]));
+                k = getStringFromInteger(getIntFromString(blockIndices[2])*v + getIntFromString(indices[1]));
                 outputValue.set(i + "," + k + "," + Float.toString(entry.getValue()));
                 context.write(null, outputValue);
             }
@@ -144,5 +148,13 @@ public class MatrixMultiplication {
         FileOutputFormat.setOutputPath(matrixJob, new Path(args[1]));
  
         matrixJob.waitForCompletion(true);
+    }
+
+    private static Integer getIntFromString(String input){
+        return Integer.parseInt(input);
+    }
+
+    private static String getStringFromInteger(Integer input){
+        return Integer.toString(input);
     }
 }
