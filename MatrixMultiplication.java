@@ -110,29 +110,39 @@ public class MatrixMultiplication {
     }
  
     public static void main(String[] args) throws Exception {
+
+        //Create a new configuration object to pass the configs to hadoop nodes
         Configuration conf = new Configuration();
-        // A is an m-by-n matrix; B is an n-by-p matrix.
+        // m and n denotes the dimensions of matrix A.
+        // m = number of rows
+        // n = number of columns
         conf.set("m", "2");
         conf.set("n", "5");
+        // n and p denotes the dimensions of matrix B
+        // n = number of rows
+        // p = number of columns
         conf.set("p", "3");
+
+        //todo - needs refactoring
         conf.set("s", "2"); // Number of rows in a block in A.
         conf.set("t", "5"); // Number of columns in a block in A = number of rows in a block in B.
         conf.set("v", "3"); // Number of columns in a block in B.
  
-        Job job = new Job(conf, "Multiplication");
-        job.setJarByClass(MatrixMultiplication.class);
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(Text.class);
+        Job matrixJob = new Job(conf, "Matrix-Multiplication");
+        matrixJob.setJarByClass(MatrixMultiplication.class);
+        matrixJob.setOutputKeyClass(Text.class);
+        matrixJob.setOutputValueClass(Text.class);
+
+        //todo - rename the class names
+        matrixJob.setMapperClass(Map.class);
+        matrixJob.setReducerClass(Reduce.class);
  
-        job.setMapperClass(Map.class);
-        job.setReducerClass(Reduce.class);
+        matrixJob.setInputFormatClass(TextInputFormat.class);
+        matrixJob.setOutputFormatClass(TextOutputFormat.class);
  
-        job.setInputFormatClass(TextInputFormat.class);
-        job.setOutputFormatClass(TextOutputFormat.class);
+        FileInputFormat.addInputPath(matrixJob, new Path(args[0]));
+        FileOutputFormat.setOutputPath(matrixJob, new Path(args[1]));
  
-        FileInputFormat.addInputPath(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
- 
-        job.waitForCompletion(true);
+        matrixJob.waitForCompletion(true);
     }
 }
