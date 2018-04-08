@@ -10,7 +10,6 @@ fi
 
 echo -e "\e[42mCleanup previous builds...\e[0m"
 rm -r ./matrix/
-rm -r ./Output/
 #create dir if not exists
 mkdir -p matrix
 
@@ -27,8 +26,14 @@ ls -la ./matrix/
 echo -e "\e[42mCreating Jar...\e[0m"
 jar -cvf MM.jar -C matrix/ .
 
-echo -e "\e[42mRun Hadoop...\e[0m"
-${HADOOP_HOME}/bin/hadoop jar MM.jar MatrixMultiplication 1
+INPUT=Input/*
+for f in $INPUT
+do
+    echo -e "\e[42mRun Hadoop Matrix Multiplication on test $(basename $f)...\e[0m"
+    rm -r ./Output/
+    ${HADOOP_HOME}/bin/hadoop jar MM.jar MatrixMultiplication $(basename $f)
+    #Compare files
+    cmp --silent "./Expected/$(basename $f)" "./Output/part-r-00000" || echo -e "\033[31;7mOutput is different than expected\e[0m";
+done
 
-#Compare files
-cmp --silent "./Expected/1.txt" "./Output/part-r-00000" || echo -e "\033[31;7mOutput is different than expected\e[0m";
+

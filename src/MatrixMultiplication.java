@@ -33,7 +33,7 @@ public class MatrixMultiplication {
         //read configs for the test
         File configFile = new File("Configs/"+args[0]);
         BufferedReader b = new BufferedReader(new FileReader(configFile));
-        String configLine = "";
+        String configLine;
         if ((configLine = b.readLine()) == null){
             System.out.println("Could not read the configurations");
             return;
