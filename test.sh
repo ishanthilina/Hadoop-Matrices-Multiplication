@@ -13,7 +13,7 @@ rm -r ./Output/
 mkdir -p matrix
 
 echo "Compiling...."
-if javac -classpath ${HADOOP_CLASSPATH}  -d matrix/ *.java; then
+if javac -classpath ${HADOOP_CLASSPATH}  -d matrix/ ./src/*.java; then
     echo "Compilation Successful...!"
 else
     echo "Compilation Failed"
