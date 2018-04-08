@@ -28,7 +28,7 @@ echo -e "\e[42mCreating Jar...\e[0m"
 jar -cvf MM.jar -C matrix/ .
 
 echo -e "\e[42mRun Hadoop...\e[0m"
-${HADOOP_HOME}/bin/hadoop jar MM.jar MatrixMultiplication data.txt Output
+${HADOOP_HOME}/bin/hadoop jar MM.jar MatrixMultiplication 1
 
 #Compare files
 cmp --silent "./Expected/1.txt" "./Output/part-r-00000" || echo -e "\033[31;7mOutput is different than expected\e[0m";

@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
@@ -19,22 +22,46 @@ public class MatrixMultiplication {
 
     public static void main(String[] args) throws Exception {
 
+        if(args.length != 1){
+            System.out.println("Wrong inputs");
+            return;
+        }
+
+        //identify which test to run
+        String testNumber = args[0];
+
+        //read configs for the test
+        File configFile = new File("Configs/"+args[0]);
+        BufferedReader b = new BufferedReader(new FileReader(configFile));
+        String configLine = "";
+        if ((configLine = b.readLine()) == null){
+            System.out.println("Could not read the configurations");
+            return;
+        }
+
+        String[] configs = configLine.split(",");
+        if(configs.length != 3){
+            System.out.println("Config file content is invalid");
+            return;
+        }
+
+
         //Create a new configuration object to pass the configs to hadoop nodes
         Configuration conf = new Configuration();
         // m and n denotes the dimensions of matrix A.
         // m = number of rows
         // n = number of columns
-        conf.set("m", "2");
-        conf.set("n", "5");
+        conf.set("m", configs[0]); //2
+        conf.set("n", configs[1]); //5
         // n and p denotes the dimensions of matrix B
         // n = number of rows
         // p = number of columns
-        conf.set("p", "3");
+        conf.set("p", configs[2]); //3
 
         //todo - needs refactoring
-        conf.set("s", "2"); // Number of rows in a block in A.
-        conf.set("t", "5"); // Number of columns in a block in A = number of rows in a block in B.
-        conf.set("v", "3"); // Number of columns in a block in B.
+        conf.set("s", configs[0]); // Number of rows in a block in A.
+        conf.set("t", configs[1]); // Number of columns in a block in A = number of rows in a block in B.
+        conf.set("v", configs[2]); // Number of columns in a block in B.
  
         Job matrixJob = new Job(conf, "Matrix-Multiplication");
         matrixJob.setJarByClass(MatrixMultiplication.class);
@@ -47,8 +74,8 @@ public class MatrixMultiplication {
         matrixJob.setInputFormatClass(TextInputFormat.class);
         matrixJob.setOutputFormatClass(TextOutputFormat.class);
  
-        FileInputFormat.addInputPath(matrixJob, new Path(args[0]));
-        FileOutputFormat.setOutputPath(matrixJob, new Path(args[1]));
+        FileInputFormat.addInputPath(matrixJob, new Path("Input/"+args[0]));
+        FileOutputFormat.setOutputPath(matrixJob, new Path("Output"));
  
         matrixJob.waitForCompletion(true);
     }
