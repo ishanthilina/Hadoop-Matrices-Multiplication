@@ -1,5 +1,3 @@
-//pacakge matrix;
-
 import java.io.IOException;
 import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
@@ -43,7 +41,6 @@ public class MatrixMultiplication {
         matrixJob.setOutputKeyClass(Text.class);
         matrixJob.setOutputValueClass(Text.class);
 
-        //todo - rename the class names
         matrixJob.setMapperClass(MatrixMapper.class);
         matrixJob.setReducerClass(MatrixReducer.class);
  

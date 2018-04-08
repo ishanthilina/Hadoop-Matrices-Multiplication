@@ -12,7 +12,6 @@ import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
-//todo -need to refactor
 public class MatrixReducer extends Reducer<Text, Text, Text, Text> {
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
         String[] matrixData;
@@ -26,22 +25,22 @@ public class MatrixReducer extends Reducer<Text, Text, Text, Text> {
                 listB.add(new SimpleEntry<String, Float>(matrixData[1] + "," + matrixData[2], MatrixMultiplication.getFloatFromString(matrixData[3])));
             }
         }
-        //todo - rename
-        String[] iModSAndJModT;
-        String[] jModTAndKModV;
+
+        String[] iModSWithJModT;
+        String[] jModTWithKModV;
 
         float aValue;
         float bValue;
         String hashKey;
         HashMap<String, Float> locationToValueMap = new HashMap<String, Float>();
         for (Entry<String, Float> aKeyVal : listA) {
-            iModSAndJModT = aKeyVal.getKey().split(",");
+            iModSWithJModT = aKeyVal.getKey().split(",");
             aValue = aKeyVal.getValue();
             for (Entry<String, Float> bKeyVal : listB) {
-                jModTAndKModV = bKeyVal.getKey().split(",");
+                jModTWithKModV = bKeyVal.getKey().split(",");
                 bValue = bKeyVal.getValue();
-                if (iModSAndJModT[1].equals(jModTAndKModV[0])) {
-                    hashKey = iModSAndJModT[0] + "," + jModTAndKModV[1];
+                if (iModSWithJModT[1].equals(jModTWithKModV[0])) {
+                    hashKey = iModSWithJModT[0] + "," + jModTWithKModV[1];
                     if (locationToValueMap.containsKey(hashKey)) {
                         locationToValueMap.put(hashKey, locationToValueMap.get(hashKey) + aValue*bValue);
                     } else {
@@ -58,7 +57,7 @@ public class MatrixReducer extends Reducer<Text, Text, Text, Text> {
         //todo - rename
         int s = MatrixMultiplication.getIntFromString(config.get("s"));
         int v = MatrixMultiplication.getIntFromString(config.get("v"));
-        
+
         Text outputValue = new Text();
         for (Entry<String, Float> entry : locationToValueMap.entrySet()) {
             myIndices = entry.getKey().split(",");
