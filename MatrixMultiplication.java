@@ -63,4 +63,8 @@ public class MatrixMultiplication {
     public static String getStringFromInteger(Integer input){
         return Integer.toString(input);
     }
+
+    public static Float getFloatFromString(String input){
+        return Float.parseFloat(input);
+    }
 }
