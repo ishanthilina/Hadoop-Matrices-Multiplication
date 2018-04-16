@@ -15,6 +15,9 @@ import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
+/**
+ * This is the main class which initiates everything
+ */
 public class MatrixMultiplication {
 
     public static final String MATRIX_A_ID = "A";
@@ -58,7 +61,6 @@ public class MatrixMultiplication {
         // p = number of columns
         conf.set("p", configs[2]); //3
 
-        //todo - needs refactoring
         conf.set("s", configs[0]); // Number of rows in a block in A.
         conf.set("t", configs[1]); // Number of columns in a block in A = number of rows in a block in B.
         conf.set("v", configs[2]); // Number of columns in a block in B.
@@ -68,13 +70,16 @@ public class MatrixMultiplication {
         matrixJob.setOutputKeyClass(Text.class);
         matrixJob.setOutputValueClass(Text.class);
 
+        //set the mapper and reducer
         matrixJob.setMapperClass(MatrixMapper.class);
         matrixJob.setReducerClass(MatrixReducer.class);
  
         matrixJob.setInputFormatClass(TextInputFormat.class);
         matrixJob.setOutputFormatClass(TextOutputFormat.class);
- 
+
+        //set where to take the input from
         FileInputFormat.addInputPath(matrixJob, new Path("Input/"+args[0]));
+        //set to where to write the output file
         FileOutputFormat.setOutputPath(matrixJob, new Path("Output"));
  
         matrixJob.waitForCompletion(true);

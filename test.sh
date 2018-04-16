@@ -8,7 +8,7 @@ if [ -z "$HADOOP_CLASSPATH" ]; then
     HADOOP_CLASSPATH=$(${HADOOP_HOME}/bin/hadoop classpath)
 fi
 
-echo -e "\e[42mCleanup previous builds...\e[0m"
+echo -e "\e[42mCleaning up previous builds...\e[0m"
 rm -r ./matrix/
 #create dir if not exists
 mkdir -p matrix
