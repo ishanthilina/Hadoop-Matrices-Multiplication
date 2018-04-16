@@ -30,9 +30,6 @@ public class MatrixMultiplication {
             return;
         }
 
-        //identify which test to run
-        String testNumber = args[0];
-
         //read configs for the test
         File configFile = new File("Configs/"+args[0]);
         BufferedReader b = new BufferedReader(new FileReader(configFile));

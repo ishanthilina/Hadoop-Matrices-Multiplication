@@ -15,5 +15,14 @@ Run the `test.sh` file. It will do the following tasks.
 - Cleanup previous build/calculation outputs
 - Compile the source code
 - Create a JAR to be executed in Hadoop
-- Run the JAR in Hadoop
-- Check if the output is correct
+- Run the JAR in Hadoop providing all the input matrices
+- Check if the output is correct for each matrix multiplication
+
+Test File Format
+-----------
+- Configs folder : Add the configuration details for the particular test.
+The order is number of rows in matrix A, number of columns in matrix A, number of columns in matrix B
+- Input folder : Contains the input matrices in sparse format
+
+Do note that the test bed matches config to input matrices by its name. The names need to be equal.
+
