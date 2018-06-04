@@ -1,9 +1,9 @@
-Hadoop 3 Matrices Multiplication
+Hadoop Two Matrix Multiplication
 =====================
 
 About
 -----
-This a pet project written with Hadoop to multiply three matrices. Based on the implementation of [Studhadoop's code](https://github.com/studhadoop/Matrix-Multiplication/blob/master/MatrixMultiplication.java)
+This a pet project written with Hadoop to multiply two matrices. Based on the implementation of [Studhadoop's code](https://github.com/studhadoop/Matrix-Multiplication/blob/master/MatrixMultiplication.java)
 
 Compiling the Project
 ----------------
